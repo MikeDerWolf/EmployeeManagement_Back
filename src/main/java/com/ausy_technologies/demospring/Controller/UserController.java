@@ -13,16 +13,15 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserService userService2;
+    private UserService userService;
 
-    //Nice work
 
 
     @PostMapping("/addRole")
     public Role saveRole(@RequestBody Role role) {
 
 
-        Role roleAdded = this.userService2.saveRole(role);
+        Role roleAdded = this.userService.saveRole(role);
         return roleAdded;
     }
 
@@ -31,47 +30,73 @@ public class UserController {
 
     @PostMapping("/addUser")
     public User saveUser(@RequestBody User user) {
-        User userAdded = this.userService2.saveUser(user);
+        User userAdded = this.userService.saveUser(user);
         return userAdded;
     }
 
     @PostMapping("/addUser2/{idRole}")
     public User saveUser2(@RequestBody User user, @PathVariable int idRole)
     {
-        return this.userService2.saveUser2(user,idRole);
+        return this.userService.saveUser2(user,idRole);
 
     }
 
     @PostMapping("/addUser3/{roleList}")
     public User saveUser3(@RequestBody User user , @PathVariable List<Role> roleList)
     {
-        return this.userService2.saveUser3(user,roleList);
+        return this.userService.saveUser3(user,roleList);
     }
 
     @GetMapping("/findRoleBy/{id}")
     public Role findRoleById(@PathVariable int id)
     {
-  return this.userService2.findRoleById(id);
+  return this.userService.findRoleById(id);
     }
 
     @GetMapping("/findAllRoles")
     public List<Role> findAllRoles()
     {
-        return  userService2.findAllRoles();
+        return  userService.findAllRoles();
     }
 
+    @GetMapping("/findUserBy/{id}")
+    public User findUserById(@PathVariable int id){
+
+        return this.userService.findUserById(id);
+    }
 
     @GetMapping("/allUsers")
     public List<User> findAllUsers()
     {
-        return this.userService2.findAllUsers();
+        return this.userService.findAllUsers();
     }
+
 
     @DeleteMapping("/deleteUserById/{id}")
     public void deleteUser(@PathVariable int id)
     {
-        this.userService2.deleteUserById(id);
+        this.userService.deleteUserById(id);
 
+    }
+
+    @DeleteMapping("/deleteRoleById/{id}")
+    public void deleteRole(@PathVariable int id){
+
+        this.userService.deleteRoleById(id);
+    }
+
+
+
+    @PutMapping("updateRole")
+    public Role updateRole(@RequestBody Role role){
+
+        return this.userService.updateRole(role);
+    }
+
+    @PutMapping("updateUser")
+    public User updateUser(@RequestBody User user){
+
+        return this.userService.updateUser(user);
     }
 
 }
