@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -68,9 +67,9 @@ public class UserService {
     }
 
 
-    public User findUserById(int id){
+    public User findUserById(int id) {
 
-        return this.userRepository.findById(id);
+        return this.userRepository.findById(id).get();
     }
 
     public Role findRoleById(int id)
@@ -110,18 +109,22 @@ public class UserService {
     }
 
 
-    public Role updateRole(Role role){
+    public Role updateRole(Role role, int id){
 
-        Role existingRole = this.roleRepository.findById(role.getId()).get();
+        Role existingRole = this.roleRepository.findById(id).get();
+        role.setId(id);
         copyNonNullProperties(role, existingRole);
         return this.roleRepository.save(existingRole);
+
     }
 
-    public User updateUser(User user){
+    public User updateUser(User user, int id){
 
-        User existingUser = this.userRepository.findById(user.getId());
+        User existingUser = this.userRepository.findById(id).get();
+        user.setId(id);
         copyNonNullProperties(user, existingUser);
         return this.userRepository.save(existingUser);
+
     }
 
 
@@ -130,7 +133,7 @@ public class UserService {
         java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
         Set emptyNames = new HashSet();
         for(java.beans.PropertyDescriptor pd : pds) {
-            //check if value of this property is null then add it to the collection
+
             Object srcValue = src.getPropertyValue(pd.getName());
             if (srcValue == null) emptyNames.add(pd.getName());
         }

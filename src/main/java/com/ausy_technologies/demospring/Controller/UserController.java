@@ -81,6 +81,7 @@ public class UserController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Responded", "findUser");
         return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(this.userService.findUserById(id));
+
     }
 
     @GetMapping("/allUsers")
@@ -113,20 +114,20 @@ public class UserController {
 
 
 
-    @PutMapping("updateRole")
-    public ResponseEntity<Role> updateRole(@RequestBody Role role){
+    @PutMapping("updateRole/{id}")
+    public ResponseEntity<Role> updateRole(@RequestBody Role role, @PathVariable int id){
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Responded", "updateRole");
-        return ResponseEntity.status(HttpStatus.ACCEPTED).headers(httpHeaders).body(this.userService.updateRole(role));
+        return ResponseEntity.status(HttpStatus.ACCEPTED).headers(httpHeaders).body(this.userService.updateRole(role, id));
     }
 
-    @PutMapping("updateUser")
-    public ResponseEntity<User> updateUser(@RequestBody User user){
+    @PutMapping("updateUser/{id}")
+    public ResponseEntity<User> updateUser(@RequestBody User user, @PathVariable int id){
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Responded", "updateUser");
-        return ResponseEntity.status(HttpStatus.ACCEPTED).headers(httpHeaders).body(this.userService.updateUser(user));
+        return ResponseEntity.status(HttpStatus.ACCEPTED).headers(httpHeaders).body(this.userService.updateUser(user, id));
     }
 
 }
