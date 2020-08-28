@@ -4,6 +4,9 @@ import com.ausy_technologies.demospring.Model.DAO.Role;
 import com.ausy_technologies.demospring.Model.DAO.User;
 import com.ausy_technologies.demospring.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,59 +21,113 @@ public class UserController {
 
 
     @PostMapping("/addRole")
-    public Role saveRole(@RequestBody Role role) {
-
+    public ResponseEntity<Role> saveRole(@RequestBody Role role) {
 
         Role roleAdded = this.userService.saveRole(role);
-        return roleAdded;
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Responded", "addRole");
+        return ResponseEntity.status(HttpStatus.CREATED).headers(httpHeaders).body(roleAdded);
     }
 
 
 
 
     @PostMapping("/addUser")
-    public User saveUser(@RequestBody User user) {
+    public ResponseEntity<User> saveUser(@RequestBody User user) {
         User userAdded = this.userService.saveUser(user);
-        return userAdded;
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Responded", "addUser");
+        return ResponseEntity.status(HttpStatus.CREATED).headers(httpHeaders).body(userAdded);
     }
 
     @PostMapping("/addUser2/{idRole}")
-    public User saveUser2(@RequestBody User user, @PathVariable int idRole)
+    public ResponseEntity<User> saveUser2(@RequestBody User user, @PathVariable int idRole)
     {
-        return this.userService.saveUser2(user,idRole);
+        User userAdded = this.userService.saveUser2(user, idRole);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Responded", "addUser2");
+        return ResponseEntity.status(HttpStatus.CREATED).headers(httpHeaders).body(userAdded);
 
     }
 
     @PostMapping("/addUser3/{roleList}")
-    public User saveUser3(@RequestBody User user , @PathVariable List<Role> roleList)
+    public ResponseEntity<User> saveUser3(@RequestBody User user , @PathVariable List<Role> roleList)
     {
-        return this.userService.saveUser3(user,roleList);
+        User userAdded = this.userService.saveUser3(user, roleList);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Responded", "addUser3");
+        return ResponseEntity.status(HttpStatus.CREATED).headers(httpHeaders).body(userAdded);
     }
 
     @GetMapping("/findRoleBy/{id}")
-    public Role findRoleById(@PathVariable int id)
+    public ResponseEntity<Role> findRoleById(@PathVariable int id)
     {
-  return this.userService.findRoleById(id);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Responded", "findRole");
+        return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(this.userService.findRoleById(id));
     }
 
     @GetMapping("/findAllRoles")
-    public List<Role> findAllRoles()
+    public ResponseEntity<List<Role>> findAllRoles()
     {
-        return  userService.findAllRoles();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Responded", "findAllRoles");
+        return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(this.userService.findAllRoles());
     }
 
+    @GetMapping("/findUserBy/{id}")
+    public ResponseEntity<User> findUserById(@PathVariable int id){
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Responded", "findUser");
+        return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(this.userService.findUserById(id));
+
+    }
 
     @GetMapping("/allUsers")
-    public List<User> findAllUsers()
+    public ResponseEntity<List<User>> findAllUsers()
     {
-        return this.userService.findAllUsers();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Responded", "findAllUsers");
+        return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(this.userService.findAllUsers());
     }
 
-    @DeleteMapping("/deleteUserById/{id}")
-    public void deleteUser(@PathVariable int id)
-    {
-        this.userService.deleteUserById(id);
 
+    @DeleteMapping("/deleteUserById/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable int id)
+    {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Responded", "deleteUser");
+        this.userService.deleteUserById(id);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).headers(httpHeaders).body("Delete successful");
+
+    }
+
+    @DeleteMapping("/deleteRoleById/{id}")
+    public ResponseEntity<String> deleteRole(@PathVariable int id){
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Responded", "deleteRole");
+        this.userService.deleteRoleById(id);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).headers(httpHeaders).body("Delete successful");
+    }
+
+
+
+    @PutMapping("updateRole/{id}")
+    public ResponseEntity<Role> updateRole(@RequestBody Role role, @PathVariable int id){
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Responded", "updateRole");
+        return ResponseEntity.status(HttpStatus.ACCEPTED).headers(httpHeaders).body(this.userService.updateRole(role, id));
+    }
+
+    @PutMapping("updateUser/{id}")
+    public ResponseEntity<User> updateUser(@RequestBody User user, @PathVariable int id){
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Responded", "updateUser");
+        return ResponseEntity.status(HttpStatus.ACCEPTED).headers(httpHeaders).body(this.userService.updateUser(user, id));
     }
 
 }
