@@ -2,6 +2,7 @@ package com.ausy_technologies.demospring.Controller;
 
 import com.ausy_technologies.demospring.Model.DAO.Role;
 import com.ausy_technologies.demospring.Model.DAO.User;
+import com.ausy_technologies.demospring.Model.DTO.UserDto;
 import com.ausy_technologies.demospring.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -93,6 +94,7 @@ public class UserController {
     }
 
 
+    
     @DeleteMapping("/deleteUserById/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable int id)
     {
@@ -128,6 +130,25 @@ public class UserController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Responded", "updateUser");
         return ResponseEntity.status(HttpStatus.ACCEPTED).headers(httpHeaders).body(this.userService.updateUser(user, id));
+    }
+
+
+
+    @GetMapping("/findUserDtoBy/{id}")
+    public ResponseEntity<UserDto> findUserDtoById(@PathVariable int id){
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Responded", "findUserDto");
+        return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(this.userService.findUserDtoById(id));
+
+    }
+
+    @GetMapping("/allUsersDto")
+    public ResponseEntity<List<UserDto>> findAllUsersDto()
+    {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Responded", "findAllUsersDto");
+        return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(this.userService.findAllUsersDto());
     }
 
 }

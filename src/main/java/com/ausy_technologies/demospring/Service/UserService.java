@@ -2,8 +2,10 @@ package com.ausy_technologies.demospring.Service;
 
 import com.ausy_technologies.demospring.Model.DAO.Role;
 import com.ausy_technologies.demospring.Model.DAO.User;
+import com.ausy_technologies.demospring.Model.DTO.UserDto;
 import com.ausy_technologies.demospring.Repository.RoleRepository;
 import com.ausy_technologies.demospring.Repository.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -147,6 +149,41 @@ public class UserService {
     }
 
 
+
+    public UserDto findUserDtoById(int id) {
+
+        User user = this.userRepository.findById(id).get();
+        ModelMapper modelMapper = new ModelMapper();
+        UserDto userDto = modelMapper.map(user, UserDto.class);
+
+        List<String> roleList = new ArrayList<>();
+        for(Role role: user.getRoleList()){
+            roleList.add(role.getName());
+        }
+        userDto.setRoleList(roleList);
+        return userDto;
+    }
+
+    public List<UserDto> findAllUsersDto(){
+
+        ModelMapper modelMapper = new ModelMapper();
+        List<User> userList = this.userRepository.findAll();
+        List<UserDto> userDtoList = new ArrayList<>();
+
+
+        for(User user: userList){
+            List<String> roleList = new ArrayList<>();
+            UserDto userDto = modelMapper.map(user, UserDto.class);
+            for(Role role: user.getRoleList()){
+                roleList.add(role.getName());
+            }
+
+            userDto.setRoleList(roleList);
+            userDtoList.add(userDto);
+
+        }
+        return userDtoList;
+    }
 
 
 }
