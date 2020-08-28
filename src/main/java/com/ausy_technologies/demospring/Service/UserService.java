@@ -5,17 +5,18 @@ import com.ausy_technologies.demospring.Model.DAO.User;
 import com.ausy_technologies.demospring.Model.DTO.UserDto;
 import com.ausy_technologies.demospring.Repository.RoleRepository;
 import com.ausy_technologies.demospring.Repository.UserRepository;
+import com.ausy_technologies.demospring.RestErrorHandling.CustomException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.logging.Level;
 
 @Service
 public class UserService {
@@ -71,35 +72,67 @@ public class UserService {
 
     public User findUserById(int id) {
 
+        if(!this.userRepository.findById(id).isPresent()){
+            CustomException customException = new CustomException(HttpStatus.NOT_FOUND, "User not found!");
+            CustomException.DisplayException(customException, Level.SEVERE);
+            throw customException;
+        }
         return this.userRepository.findById(id).get();
     }
 
     public Role findRoleById(int id)
     {
+        if(!this.roleRepository.findById(id).isPresent()){
+            CustomException customException = new CustomException(HttpStatus.NOT_FOUND, "Role not found!");
+            CustomException.DisplayException(customException, Level.SEVERE);
+            throw customException;
+        }
         return this.roleRepository.findById(id).get();
 
     }
 
     public List<Role> findAllRoles()
     {
-        return this.roleRepository.findAll();
+        List<Role> roleList = this.roleRepository.findAll();
+        if(roleList.size()==0){
+            CustomException customException = new CustomException(HttpStatus.NO_CONTENT, "Content not found!");
+            CustomException.DisplayException(customException, Level.WARNING);
+            throw customException;
+        }
+        return roleList;
     }
 
 
     public List<User> findAllUsers()
     {
-        return this.userRepository.findAll();
+        List<User> userList = this.userRepository.findAll();
+        if(userList.size()==0){
+            CustomException customException = new CustomException(HttpStatus.NO_CONTENT, "Content not found!");
+            CustomException.DisplayException(customException, Level.WARNING);
+            throw customException;
+        }
+        return userList;
     }
 
 
     public void deleteUserById(int id){
 
+        if(!this.userRepository.findById(id).isPresent()){
+            CustomException customException = new CustomException(HttpStatus.NOT_FOUND, "User not found!");
+            CustomException.DisplayException(customException, Level.SEVERE);
+            throw customException;
+        }
         this.userRepository.deleteById(id);
     }
 
 
-    public void deleteRoleById(int id){    //in acest fel dispar si inregistrarile din useri_roluri
+    public void deleteRoleById(int id){    //in acest fel dispar si inregistrarile din user_role
 
+        if(!this.roleRepository.findById(id).isPresent()){
+            CustomException customException = new CustomException(HttpStatus.NOT_FOUND, "Role not found!");
+            CustomException.DisplayException(customException, Level.SEVERE);
+            throw customException;
+        }
         Role role = this.roleRepository.findById(id).get();
         List<User> users = this.userRepository.findAll();
         for(User u: users){
@@ -113,7 +146,15 @@ public class UserService {
 
     public Role updateRole(Role role, int id){
 
-        Role existingRole = this.roleRepository.findById(id).get();
+        Optional<Role> opt = this.roleRepository.findById(id);
+
+        if(!opt.isPresent()){
+            CustomException customException = new CustomException(HttpStatus.NOT_FOUND, "Role not found!");
+            CustomException.DisplayException(customException, Level.SEVERE);
+            throw customException;
+        }
+
+        Role existingRole = opt.get();
         role.setId(id);
         copyNonNullProperties(role, existingRole);
         return this.roleRepository.save(existingRole);
@@ -122,14 +163,22 @@ public class UserService {
 
     public User updateUser(User user, int id){
 
-        User existingUser = this.userRepository.findById(id).get();
+        Optional<User> opt = this.userRepository.findById(id);
+
+        if(!opt.isPresent()){
+            CustomException customException = new CustomException(HttpStatus.NOT_FOUND, "User not found!");
+            CustomException.DisplayException(customException, Level.SEVERE);
+            throw customException;
+        }
+        User existingUser = opt.get();
         user.setId(id);
         copyNonNullProperties(user, existingUser);
         return this.userRepository.save(existingUser);
 
     }
 
-
+    //functie ce ajuta la copierea proprietatilor nenule
+    //astfel, la update, putem scire in body doar campul care trebuie sa fie actualizat
     private String[] getNullPropertyNames (Object source) {
         final BeanWrapper src = new BeanWrapperImpl(source);
         java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
@@ -152,7 +201,15 @@ public class UserService {
 
     public UserDto findUserDtoById(int id) {
 
-        User user = this.userRepository.findById(id).get();
+        Optional<User> opt = this.userRepository.findById(id);
+
+        if(!opt.isPresent()){
+            CustomException customException = new CustomException(HttpStatus.NOT_FOUND, "UserDTO not found!");
+            CustomException.DisplayException(customException, Level.SEVERE);
+            throw customException;
+        }
+
+        User user = opt.get();
         ModelMapper modelMapper = new ModelMapper();
         UserDto userDto = modelMapper.map(user, UserDto.class);
 
@@ -166,10 +223,16 @@ public class UserService {
 
     public List<UserDto> findAllUsersDto(){
 
-        ModelMapper modelMapper = new ModelMapper();
         List<User> userList = this.userRepository.findAll();
-        List<UserDto> userDtoList = new ArrayList<>();
 
+        if(userList.size()==0){
+            CustomException customException = new CustomException(HttpStatus.NO_CONTENT, "Content not found!");
+            CustomException.DisplayException(customException, Level.WARNING);
+            throw customException;
+        }
+
+        List<UserDto> userDtoList = new ArrayList<>();
+        ModelMapper modelMapper = new ModelMapper();
 
         for(User user: userList){
             List<String> roleList = new ArrayList<>();

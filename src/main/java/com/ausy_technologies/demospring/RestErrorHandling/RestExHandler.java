@@ -24,6 +24,7 @@ import java.util.NoSuchElementException;
 public class RestExHandler extends ResponseEntityExceptionHandler {
 
 
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request){
         String error = "Argument Not Valid";
@@ -41,28 +42,25 @@ public class RestExHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         ServletWebRequest servletWebRequest = (ServletWebRequest) request;
-        String error = "Incorrect values in JSON";
-        return buildResponseEntity(new ErrorResponse(HttpStatus.BAD_REQUEST, error, ex));
+        return buildResponseEntity(new ErrorResponse(HttpStatus.BAD_REQUEST, "Incorrect values in JSON", ex));
     }
 
     @Override
     protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         ServletWebRequest servletWebRequest = (ServletWebRequest) request;
-        String error = "Wrong Data Type";
-        return buildResponseEntity(new ErrorResponse(HttpStatus.BAD_REQUEST, error, ex));
+        return buildResponseEntity(new ErrorResponse(HttpStatus.BAD_REQUEST, "Wrong Data Type", ex));
     }
 
 
     @ExceptionHandler(NoSuchElementException.class)
     protected ResponseEntity<Object> handleNoSuchElementException( NoSuchElementException ex, HttpServletResponse httpServletResponse){
-        String error = "ID doesn't exist";
-        return buildResponseEntity(new ErrorResponse(HttpStatus.NOT_FOUND, error, ex));
+        return buildResponseEntity(new ErrorResponse(HttpStatus.NOT_FOUND, "ID doesn't exist", ex));
     }
 
-    
 
     private ResponseEntity<Object> buildResponseEntity(ErrorResponse errorResponse) {
         return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
     }
+
 
 }
