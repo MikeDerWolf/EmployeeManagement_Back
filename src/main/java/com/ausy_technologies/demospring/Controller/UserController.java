@@ -2,6 +2,7 @@ package com.ausy_technologies.demospring.Controller;
 
 import com.ausy_technologies.demospring.Model.DAO.Role;
 import com.ausy_technologies.demospring.Model.DAO.User;
+import com.ausy_technologies.demospring.Model.DTO.UserDto;
 import com.ausy_technologies.demospring.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -64,7 +65,7 @@ public class UserController {
     {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Responded", "findRole");
-        return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(this.userService.findRoleById(id));
+        return ResponseEntity.status(HttpStatus.FOUND).headers(httpHeaders).body(this.userService.findRoleById(id));
     }
 
     @GetMapping("/findAllRoles")
@@ -72,7 +73,7 @@ public class UserController {
     {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Responded", "findAllRoles");
-        return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(this.userService.findAllRoles());
+        return ResponseEntity.status(HttpStatus.FOUND).headers(httpHeaders).body(this.userService.findAllRoles());
     }
 
     @GetMapping("/findUserBy/{id}")
@@ -80,7 +81,7 @@ public class UserController {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Responded", "findUser");
-        return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(this.userService.findUserById(id));
+        return ResponseEntity.status(HttpStatus.FOUND).headers(httpHeaders).body(this.userService.findUserById(id));
 
     }
 
@@ -89,8 +90,9 @@ public class UserController {
     {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Responded", "findAllUsers");
-        return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(this.userService.findAllUsers());
+        return ResponseEntity.status(HttpStatus.FOUND).headers(httpHeaders).body(this.userService.findAllUsers());
     }
+
 
 
     @DeleteMapping("/deleteUserById/{id}")
@@ -128,6 +130,25 @@ public class UserController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Responded", "updateUser");
         return ResponseEntity.status(HttpStatus.ACCEPTED).headers(httpHeaders).body(this.userService.updateUser(user, id));
+    }
+
+
+
+    @GetMapping("/findUserDtoBy/{id}")
+    public ResponseEntity<UserDto> findUserDtoById(@PathVariable int id){
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Responded", "findUserDto");
+        return ResponseEntity.status(HttpStatus.FOUND).headers(httpHeaders).body(this.userService.findUserDtoById(id));
+
+    }
+
+    @GetMapping("/allUsersDto")
+    public ResponseEntity<List<UserDto>> findAllUsersDto()
+    {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Responded", "findAllUsersDto");
+        return ResponseEntity.status(HttpStatus.FOUND).headers(httpHeaders).body(this.userService.findAllUsersDto());
     }
 
 }
